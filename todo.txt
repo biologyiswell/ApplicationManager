@@ -1,7 +1,3 @@
-Compiler
------------------
-!! 1. When compile App.java using "javac" removes the "package app;" that represents the first line from App.java !!
-
 More Future Functions
 -----------------
 ADD (01/05/2018 20:45): Support to an installer
