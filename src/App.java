@@ -973,7 +973,7 @@ public final class App {
         // final StringBuilder sb = new StringBuilder();
         // sb.append("@echo off\n").append("start ").append(path);
 
-        try (final FileWriter writer = new FileWriter(new File(BATCH_FOLDER, "__init_" + key + "__.bat"))) {
+        try (final FileWriter writer = new FileWriter(getBatchFile(key))) {
             writer.write(fileContentBatch);
         } catch (IOException e) {
             error("An error ocurred when register key \"%\" at path \"%\"", key, path);
