@@ -32,9 +32,12 @@ from file, ExecutorService creates a new single threaded pool then the ExecutorS
 
 Fixed Bugs & Additions
 -----------------
-ADD (30/04/2018 13:34) REPORTED (30/04/2018 12:31): Add "clear" command, that makes the clear from screen
+FIXED (01/05/2018 20:50) REPORTED (01/05/2018 20:49): A bug that occurs when register key that when write the path from the application in batch file
+the path not contains the "" to can represents the path, and without this the path is not start correctly
 
-ADD (30/04/2018 13:24) REPORTED (30/04/2018 12:28): Add in "dir" command the varargs of file index like "10, 32" that choose on the first file path
+ADDED (30/04/2018 13:34) REPORTED (30/04/2018 12:31): Add "clear" command, that makes the clear from screen
+
+ADDED (30/04/2018 13:24) REPORTED (30/04/2018 12:28): Add in "dir" command the varargs of file index like "10, 32" that choose on the first file path
 the 10 index and in the file path that is searched select 32 index, making the easily navigation between paths and fix
 bug that occurs that when choose the path by file index how navigate to next path
 

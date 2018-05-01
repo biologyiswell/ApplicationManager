@@ -967,7 +967,7 @@ public final class App {
         // @Note (pathIndex + 1) is put because if only put (pathIndex) the first character
         // from filePathName is "\"
         final String filePathName = path.substring(pathIndex + 1, path.length());
-        final String fileContentBatch = "@echo off" + System.lineSeparator() + "cd " + filePath + System.lineSeparator() + "start " + filePathName + System.lineSeparator() + "EXIT";
+        final String fileContentBatch = "@echo off" + System.lineSeparator() + "cd " + filePath + System.lineSeparator() + "start \"" + filePathName + "\"" + System.lineSeparator() + "EXIT";
 
         // @Note StringBuilder is replaced by one String
         // final StringBuilder sb = new StringBuilder();
