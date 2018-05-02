@@ -10,9 +10,6 @@ Functions
 FIX (01/05/2018 20:46): A bug that occurs of testing out of IDE using Command Prompt from Windows, the Application
 Manager can not read UTF-8 characters making the "mkfile", "mkdir" that are commands fail
 
-ADD (30/04/2018 13:51): Add "tasklist" command that list the all processors that are running to can use the "taskkill"
-command that need know the processors that can be get using "tasklist"
-
 ADD (30/04/2018 13:42): Add "taskkill" command that kill tasks that running
 
 ADD (30/04/2018 13:26): Add a help to each command
@@ -28,6 +25,9 @@ from file, ExecutorService creates a new single threaded pool then the ExecutorS
 
 Fixed Bugs & Additions
 -----------------
+ADDED (01/05/2018 21:54) REPORTED (30/04/2018 13:51): Add "tasklist" command that list the all processors that are running to can use the "taskkill"
+command that need know the processors that can be get using "tasklist"
+
 FIXED (01/05/2018 21:16) REPORTED (01/05/2018 21:00): A bug with "dir" command in navigate by folders using file index, when the file index can not
 be found the Application not report this and the application is closed
     -> This error is caused because the catch from the error from file index not found is wrong

@@ -20,9 +20,23 @@ import java.util.concurrent.Executors;
  *
  * @author biologysiwell (23/04/2018 20:46)
  * @since  0.1
- * @version 0.1
+ * @version 1.0
  */
 public final class App {
+
+    /**
+     * OsType, enum,
+     * This represents an enum that represents the Operational System that the application supports
+     *
+     * @author biologyiswell (01/05/2018 21:31)
+     * @since 1.0
+     */
+    enum OsType {
+        WINDOWS,
+        MAC,
+        LINUX,
+        SOLARIS;
+    }
 
     /**
      * Date Format,
@@ -48,6 +62,13 @@ public final class App {
      */
     private static final File BATCH_FOLDER = new File("batchs");
 
+    /**
+     * OS Type,
+     * This represents the Operational System Type that are running this application
+     *
+     * @since 1.0
+     */
+    private static final OsType OS_TYPE = initOsType();
 
     /**
      * Scanner,
@@ -700,6 +721,15 @@ public final class App {
             parseCommand(); // Recursive
             return;
         }
+        // @Note Task List command operation
+        else if (command.equalsIgnoreCase("tasklist")) {
+            // @Note This method run the operational system command and to run the operational system command the method
+            // check if the operatinal system that running this application can supports this command
+            runOsCommand(new OsType[] { OsType.WINDOWS }, "cmd", "/c", "tasklist");
+
+            parseCommand(); // Recursive
+            return;
+        }
 
         printf("Command has not found. Try again!\n");
         parseCommand(); // Recursive
@@ -1326,5 +1356,79 @@ public final class App {
             sb.append(" ");
         }
         return sb.toString();
+    }
+
+    /**
+     * Run Os Command,
+     * This method run a operational system command
+     *
+     * @param osTypes the operational system types that supports this command
+     * @param commands the commands
+     */
+    public static void runOsCommand(final OsType[] osTypes, final String... commands) {
+        boolean isSupported = false;
+        for (final OsType os : osTypes) {
+            // @Note This condition represents that the Operational System command that is runned by this method,
+            // the command is supported by the Operatinal System
+            if (os == OS_TYPE) {
+                isSupported = true;
+                break;
+            }
+        }
+
+        // @Note This condition check if the operational system supports the command
+        if (!isSupported) {
+            error("An error occured when run operational system command that the operational system \"%\" not supports the command.", OS_TYPE);
+
+            parseCommand(); // Recursive
+            return;
+        }
+
+        try {
+            new ProcessBuilder(commands).inheritIO().start().waitFor();
+        } catch (Exception e) {
+            error("An error occured when run operational system command. (Report to an administrator)\n");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Init Os Type,
+     * This method initialize the Operational System type from application
+     *
+     * @return Operational System type that running this application
+     */
+    private static OsType initOsType() {
+        final String osName = System.getProperty("os.name");
+
+        if (osName.contains("win")) {
+            return OsType.WINDOWS;
+        } else if (osName.contains("mac")) {
+            return OsType.MAC;
+        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            return OsType.LINUX;
+        } else if (osName.contains("sunos")) {
+            return OsType.SOLARIS;
+        }
+
+        throw new RuntimeException("Operational System type (" + osName + ") is not supported by application.");
+    }
+
+    /**
+     * Support Os,
+     * This method check if the Operational System that running this application support the operational system types
+     * that are in "osTypes"
+     *
+     * @param osTypes the operational system types
+     * @return true if the operational system that is running this application support the operational system types
+     */
+    private static boolean supportOs(final OsType... osTypes) {
+        for (final OsType os : osTypes) {
+            if (os == OS_TYPE) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
