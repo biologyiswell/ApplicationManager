@@ -636,16 +636,17 @@ public final class App {
                 File[] listFiles = new File(path).listFiles();
 
                 for (int index : fileIndexes) {
+                    // @Note This condition make the check about the index from list files array,
+                    // if the check from the index is not do, the application throw an exception
+                    if (index > listFiles.length) {
+                        error("File has not found.\n");
+
+                        parseCommand(); // Recursive
+                        return;
+                    }
+
                     currentFile = listFiles[index];
                     listFiles = currentFile.listFiles();
-                }
-
-                // @Note Check if the current file is null
-                if  (currentFile == null) {
-                    error("File has not found.\n");
-
-                    parseCommand(); // Recursive
-                    return;
                 }
 
                 // @Note Assign file to current file that found by searching index
