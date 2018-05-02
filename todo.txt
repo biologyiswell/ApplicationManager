@@ -4,9 +4,15 @@ ADD (01/05/2018 20:45): Support to an installer
 
 ADD (30/04/2018 13:31): Support to other Operational Systems like MAC and Linux, only now the Application Manager only
 support Windows OS that represents the Main Operational System that the Application is developed
+    -> STARTED (01/05/2018 21:56)
 
 Functions
 -----------------
+FIX (01/05/2018 21:57): Make that the common processes that are make by operational system types run commands in the
+same command without make that the OS need support the command to run, but the command name need be changed to make a
+command process name commonly about operational system types that the application supports, then the OS that not
+contains the command process need be check
+
 FIX (01/05/2018 20:46): A bug that occurs of testing out of IDE using Command Prompt from Windows, the Application
 Manager can not read UTF-8 characters making the "mkfile", "mkdir" that are commands fail
 
