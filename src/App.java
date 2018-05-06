@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,20 +22,6 @@ import java.util.concurrent.Executors;
  * @since 0.1
  */
 public final class App {
-
-    /**
-     * OsType, enum,
-     * This represents an enum that represents the Operational System that the application supports
-     *
-     * @author biologyiswell (01/05/2018 21:31)
-     * @since 1.0
-     */
-    enum OsType {
-        WINDOWS,
-        MAC,
-        LINUX,
-        SOLARIS;
-    }
 
     /**
      * Date Format,
@@ -61,14 +46,6 @@ public final class App {
      * @since 0.1
      */
     private static final File BATCH_FOLDER = new File("batchs");
-
-    /**
-     * OS Type,
-     * This represents the Operational System Type that are running this application
-     *
-     * @since 1.0
-     */
-    private static final OsType OS_TYPE = initOsType();
 
     /**
      * Scanner,
@@ -766,9 +743,33 @@ public final class App {
         // @Note Check if the batch folders is created
         if (!BATCH_FOLDER.exists() && !isCreated) {
             error("An error occured when load application manager from database \"%\". (Report to an administrator)\n", BATCH_FOLDER.getAbsolutePath());
-            error("Application will be exit on 2 seconds.\n");
-            exit(2000L);
+            error("Application will be exit on 5 seconds.\n");
+            exit(5000L);
             return;
+        }
+
+        // @Note This represents the main batch file
+        // that initializes the application
+        final File mainBatch = getMainFile();
+
+        // @Note Check if the main batch file exists
+        if (!mainBatch.exists()) {
+            try {
+                mainBatch.createNewFile();
+
+                try (final FileWriter writer = new FileWriter(mainBatch)) {
+                    writer.write("@echo off" + System.lineSeparator() + "java -Xms1M -Xmx4M -jar App.jar");
+                } catch (IOException e) {
+                    error("An error occured when write the content to main batch file. (Report to an administrator)\n");
+                    error("Application will be exit on 5 seconds.");
+                    exit(5000L);
+                    return;
+                }
+            } catch (Exception e) {
+                error("An error occured when load application manager from database when create \"%\". (Report to an administrator)\n", mainBatch.getAbsolutePath());
+                error("Application will be exit on 5 seconds.");
+                exit(5000L);
+            }
         }
 
         // @Note This represents the file from database
@@ -780,11 +781,11 @@ public final class App {
                 file.createNewFile();
             } catch (Exception e) {
                 error("An error occured when load application manager from database when create \"%\". (Report to an administrator)\n", file.getAbsolutePath());
-                error("Application will be exit on 2 seconds.");
-                exit(2000L);
+                error("Application will be exit on 5 seconds.");
+                exit(5000L);
             }
 
-            // @Note This return serves to not continue the process to load the infomrations, because if the file not
+            // @Note This return serves to not continue the process to load the informations, because if the file not
             // exists not need continue the process to read the file to get the keys and paths that contains in the
             // file
             return;
@@ -805,6 +806,9 @@ public final class App {
             error("An error occured when load application manager from database \"%\". (Report to an administrator)\n", file.getAbsolutePath());
             e.printStackTrace();
         }
+
+        // @Note This method initializes the main batch file
+        // runOsCommand("cmd", "/c", "cd " + file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - file.getName().length() - 1), "start " + mainBatch.getName());
     }
 
     /**
@@ -1078,6 +1082,15 @@ public final class App {
     }
 
     /**
+     * Get Main File,
+     * This method get the main batch file that represents the file
+     * that initializes the application
+     */
+    private static File getMainFile() {
+        return new File("run.bat");
+    }
+
+    /**
      * Destroy,
      * This method destroy the all Application Manager Database
      *
@@ -1088,14 +1101,10 @@ public final class App {
         KEYS.clear();
 
         try {
-            // @Note Delete file database
-            getFileDatabase().delete();
-
-            // @Note Delete the all files that contains in batch folder and the batch folder
-            for (final File file : Objects.requireNonNull(BATCH_FOLDER.listFiles())) {
-                file.delete();
-            }
-            BATCH_FOLDER.delete();
+            // @Note Delete the all files that represents the
+            // storage from the application
+            delete(getFileDatabase());
+            delete(BATCH_FOLDER);
         } catch (Exception e) {
             return false;
         }
@@ -1382,48 +1391,6 @@ public final class App {
             error("An error occured when run operational system command. (Report to an administrator)\n");
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Init Os Type,
-     * This method initialize the Operational System type from application
-     *
-     * @return Operational System type that running this application
-     * @since 1.0
-     */
-    private static OsType initOsType() {
-        final String osName = System.getProperty("os.name");
-
-        if (osName.contains("Windows")) {
-            return OsType.WINDOWS;
-        } else if (osName.startsWith("Mac") || osName.startsWith("Darwin")) {
-            return OsType.MAC;
-        } else if (osName.startsWith("Linux")) {
-            return OsType.LINUX;
-        } else if (osName.startsWith("Solaris") || osName.startsWith("SunOS")) {
-            return OsType.SOLARIS;
-        }
-
-        throw new RuntimeException("Operational System type (" + osName + ") is not supported by application.");
-    }
-
-    /**
-     * Support Os,
-     * This method check if the Operational System that running this application support the operational system types
-     * that are in "osTypes"
-     *
-     * @param osTypes the operational system types
-     * @return true if the operational system that is running this application support the operational system types
-     * @since 1.0
-     */
-    private static boolean supportOs(final OsType... osTypes) {
-        for (final OsType os : osTypes) {
-            if (os == OS_TYPE) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

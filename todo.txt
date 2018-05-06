@@ -1,3 +1,6 @@
+Comments
+-----------------
+
 More Future Functions
 -----------------
 ADD (01/05/2018 20:45): Support to an installer
@@ -8,6 +11,8 @@ support Windows OS that represents the Main Operational System that the Applicat
 
 Functions
 -----------------
+FIX (06/05/2018 11:06): A bug that occurs to self-initialization from App
+
 FIX (01/05/2018 20:46): A bug that occurs of testing out of IDE using Command Prompt from Windows, the Application
 Manager can not read UTF-8 characters making the "mkfile", "mkdir" that are commands fail
 
