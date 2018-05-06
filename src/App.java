@@ -19,8 +19,8 @@ import java.util.concurrent.Executors;
  * This represents an app that handles files and folders in general
  *
  * @author biologysiwell (23/04/2018 20:46)
- * @since  0.1
  * @version 1.0
+ * @since 0.1
  */
 public final class App {
 
@@ -42,7 +42,7 @@ public final class App {
      * Date Format,
      * This represents a variable that format dates
      *
-     * @since  0.1
+     * @since 0.1
      */
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
@@ -50,7 +50,7 @@ public final class App {
      * Keys,
      * This map represents the keys and data values from keys
      *
-     * @since  0.1
+     * @since 0.1
      */
     private static final Map<String, String> KEYS = new LinkedHashMap<>();
 
@@ -74,7 +74,7 @@ public final class App {
      * Scanner,
      * This represents a variable that scan input strings from console input
      *
-     * @since  0.1
+     * @since 0.1
      */
     private static Scanner scanner;
 
@@ -91,9 +91,11 @@ public final class App {
      * Main,
      * This represents the main method that is called by JVM to starts Application Manager
      *
-     * @since  0.1
+     * @since 0.1
      */
     public static void main(String[] args) {
+        System.setProperty("file.encoding", "UTF-8");
+
         printf("\n");
         printf("  Application Manager v0.1\n");
         printf("  Type \"help\" to see commands\n");
@@ -113,7 +115,7 @@ public final class App {
      * Parse Command,
      * This method parse the command input from console input
      *
-     * @since  0.1
+     * @since 0.1
      */
     public static void parseCommand() {
         final String[] args = getCommand().split(" "); /* split arguments by " " */
@@ -721,15 +723,6 @@ public final class App {
             parseCommand(); // Recursive
             return;
         }
-        // @Note Task List command operation
-        else if (command.equalsIgnoreCase("tasklist")) {
-            // @Note This method run the operational system command and to run the operational system command the method
-            // check if the operatinal system that running this application can supports this command
-            runOsCommand(new OsType[] { OsType.WINDOWS }, "cmd", "/c", "tasklist");
-
-            parseCommand(); // Recursive
-            return;
-        }
 
         printf("Command has not found. Try again!\n");
         parseCommand(); // Recursive
@@ -744,7 +737,7 @@ public final class App {
      *
      * @since 0.1
      */
-    public static void initApp() {
+    private static void initApp() {
         try {
             scanner = new Scanner(new InputStreamReader(System.in, "UTF-8"));
 
@@ -763,18 +756,37 @@ public final class App {
      * Load Application Manager,
      * This method load the all keys and data values that are storage in database file
      *
-     * @since  0.1
+     * @since 0.1
      */
-    public static void loadApplicationManagerDb() {
+    private static void loadApplicationManagerDb() {
         // @Note Create the folder if not exists, and the make from Data Folder
         // need be the first process
-        BATCH_FOLDER.mkdirs();
+        final boolean isCreated = BATCH_FOLDER.mkdirs();
+
+        // @Note Check if the batch folders is created
+        if (!BATCH_FOLDER.exists() && !isCreated) {
+            error("An error occured when load application manager from database \"%\". (Report to an administrator)\n", BATCH_FOLDER.getAbsolutePath());
+            error("Application will be exit on 2 seconds.\n");
+            exit(2000L);
+            return;
+        }
 
         // @Note This represents the file from database
         final File file = getFileDatabase();
 
         // @Note Check if the file exists, otherwise returns method
         if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                error("An error occured when load application manager from database when create \"%\". (Report to an administrator)\n", file.getAbsolutePath());
+                error("Application will be exit on 2 seconds.");
+                exit(2000L);
+            }
+
+            // @Note This return serves to not continue the process to load the infomrations, because if the file not
+            // exists not need continue the process to read the file to get the keys and paths that contains in the
+            // file
             return;
         }
 
@@ -800,9 +812,9 @@ public final class App {
      * This method save the all keys and data values storaged by Application Manager
      * to file database
      *
-     * @since  0.1
+     * @since 0.1
      */
-    public static void saveApplicationManagerDb() {
+    private static void saveApplicationManagerDb() {
         // @Note This represents the file from database
         final File file = getFileDatabase();
 
@@ -869,8 +881,8 @@ public final class App {
      *
      * @param message the message that will print to console output
      * @param args    the varargs of arguments
-     * @see  		  {@link #printf(boolean, String, Object...)}
-     * @since  0.1
+     * @see {@link #printf(boolean, String, Object...)}
+     * @since 0.1
      */
     public static void printf(final String message, final Object... args) {
         printf(true, message, args);
@@ -882,10 +894,10 @@ public final class App {
      * in message where message has '%'
      *
      * @param printWithDate this variable represents that before print message is to show the date
-     * @param message 		the message that will print to console output
-     * @param args    		the varargs of arguments
-     * @see 				{@link #printf(String, Object...)}
-     * @since  0.1
+     * @param message       the message that will print to console output
+     * @param args          the varargs of arguments
+     * @see {@link #printf(String, Object...)}
+     * @since 0.1
      */
     public static void printf(final boolean printWithDate, final String message, final Object... args) {
         if (args.length == 0) {
@@ -915,7 +927,7 @@ public final class App {
      * This method close the program, this method is recommended when close the Application Manager,
      * because this method is more secure because this method execute functions before close the program
      *
-     * @since  0.1
+     * @since 0.1
      */
     public static void exit() {
         // @Note This method save the all application manager content informations to database storage
@@ -928,7 +940,7 @@ public final class App {
      * This method prints a ">" that represents the prefix to input command
      *
      * @return command arguments
-     * @since  0.1
+     * @since 0.1
      */
     public static String getCommand() {
         printf("> ");
@@ -939,7 +951,7 @@ public final class App {
      * Print Help Commands,
      * This method print the all commands from Application Manager
      *
-     * @since  0.1
+     * @since 0.1
      */
     public static void printHelpCommands() {
         printf("\n");
@@ -998,7 +1010,7 @@ public final class App {
         // @Note (pathIndex + 1) is put because if only put (pathIndex) the first character
         // from filePathName is "\"
         final String filePathName = path.substring(pathIndex + 1, path.length());
-        final String fileContentBatch = "@echo off" + System.lineSeparator() + "cd " + filePath + System.lineSeparator() + "start \"" + filePathName + "\"" + System.lineSeparator() + "EXIT";
+        final String fileContentBatch = "@echo off" + System.lineSeparator() + "cd " + filePath + System.lineSeparator() + "start " + filePathName + System.lineSeparator() + "EXIT";
 
         // @Note StringBuilder is replaced by one String
         // final StringBuilder sb = new StringBuilder();
@@ -1113,7 +1125,7 @@ public final class App {
      * This method check if in the all string that contains in source array is
      * equals ignore case string flag
      *
-     * @param src the source array
+     * @param src  the source array
      * @param flag the flag
      * @return true if flag contains in string source array, otherwise false
      */
@@ -1200,13 +1212,12 @@ public final class App {
      * Do Copy Directory,
      * This method makes the copy from a directory
      *
-     * @Note This method represents an implementation from Apache Commons Lang from GitHub
-     * https://github.com/apache/commons-io/blob/master/src/main/java/org/apache/commons/io/FileUtils.java
-     *
-     * @param src the source directory
-     * @param dest the destination directory
+     * @param src              the source directory
+     * @param dest             the destination directory
      * @param preserveFileDate this represents if the all files that contains in destination files that are copied from
      *                         source directory has the date from source file
+     * @Note This method represents an implementation from Apache Commons Lang from GitHub
+     * https://github.com/apache/commons-io/blob/master/src/main/java/org/apache/commons/io/FileUtils.java
      */
     private static void doCopyDirectory(final File src, final File dest, final boolean preserveFileDate) {
         if (src == null) throw new NullPointerException("src");
@@ -1260,12 +1271,11 @@ public final class App {
      * Do Copy File,
      * This method makes the copy from a file
      *
+     * @param src              the source file
+     * @param dest             the destination file
+     * @param preserveFileDate this represents if the destination file has the last modification date from source file
      * @Note This method represents an implementation from Apache Commons Lang Library from GitHub
      * https://github.com/apache/commons-io/blob/master/src/main/java/org/apache/commons/io/FileUtils.java
-     *
-     * @param src the source file
-     * @param dest the destination file
-     * @param preserveFileDate this represents if the destination file has the last modification date from source file
      */
     private static void doCopyFile(final File src, final File dest, final boolean preserveFileDate) {
         if (src == null) throw new NullPointerException("src");
@@ -1349,6 +1359,7 @@ public final class App {
      *
      * @param relativeString the relative string
      * @return a spacing string
+     * @since 0.1
      */
     private static String spacing(final String relativeString, final int spacing) {
         final StringBuilder sb = new StringBuilder();
@@ -1362,28 +1373,9 @@ public final class App {
      * Run Os Command,
      * This method run a operational system command
      *
-     * @param osTypes the operational system types that supports this command
      * @param commands the commands
      */
-    public static void runOsCommand(final OsType[] osTypes, final String... commands) {
-        boolean isSupported = false;
-        for (final OsType os : osTypes) {
-            // @Note This condition represents that the Operational System command that is runned by this method,
-            // the command is supported by the Operatinal System
-            if (os == OS_TYPE) {
-                isSupported = true;
-                break;
-            }
-        }
-
-        // @Note This condition check if the operational system supports the command
-        if (!isSupported) {
-            error("An error occured when run operational system command that the operational system \"%\" not supports the command.", OS_TYPE);
-
-            parseCommand(); // Recursive
-            return;
-        }
-
+    public static void runOsCommand(final String... commands) {
         try {
             new ProcessBuilder(commands).inheritIO().start().waitFor();
         } catch (Exception e) {
@@ -1397,17 +1389,18 @@ public final class App {
      * This method initialize the Operational System type from application
      *
      * @return Operational System type that running this application
+     * @since 1.0
      */
     private static OsType initOsType() {
         final String osName = System.getProperty("os.name");
 
-        if (osName.contains("win")) {
+        if (osName.contains("Windows")) {
             return OsType.WINDOWS;
-        } else if (osName.contains("mac")) {
+        } else if (osName.startsWith("Mac") || osName.startsWith("Darwin")) {
             return OsType.MAC;
-        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+        } else if (osName.startsWith("Linux")) {
             return OsType.LINUX;
-        } else if (osName.contains("sunos")) {
+        } else if (osName.startsWith("Solaris") || osName.startsWith("SunOS")) {
             return OsType.SOLARIS;
         }
 
@@ -1421,6 +1414,7 @@ public final class App {
      *
      * @param osTypes the operational system types
      * @return true if the operational system that is running this application support the operational system types
+     * @since 1.0
      */
     private static boolean supportOs(final OsType... osTypes) {
         for (final OsType os : osTypes) {
@@ -1430,5 +1424,21 @@ public final class App {
         }
 
         return false;
+    }
+
+    /**
+     * Exit,
+     * This method exit the application after from a time
+     *
+     * @param millis the time to exit application
+     */
+    public static void exit(long millis) {
+        try {
+            Thread.sleep(millis);
+            System.exit(-1);
+        } catch (Exception e) {
+            error("An error occured when exit application. (Report to an administrator)\n");
+            return;
+        }
     }
 }
