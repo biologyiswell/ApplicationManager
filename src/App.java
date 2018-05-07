@@ -690,12 +690,7 @@ public final class App {
         }
         // @Note Clear command operation
         else if (command.equalsIgnoreCase("clear")) {
-            try {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } catch (Exception e) {
-                error("An error occured when clear screen. (Report to an administrator)\n");
-                e.printStackTrace();
-            }
+            runOsCommand("cmd", "/c", "cls");
 
             parseCommand(); // Recursive
             return;
@@ -758,7 +753,7 @@ public final class App {
                 mainBatch.createNewFile();
 
                 try (final FileWriter writer = new FileWriter(mainBatch)) {
-                    writer.write("@echo off" + System.lineSeparator() + "java -Xms1M -Xmx4M -jar App.jar");
+                    writer.write("@echo off" + System.lineSeparator() + "java -Xms1M -Xmx4M -Dself_init=true -jar App.jar");
                 } catch (IOException e) {
                     error("An error occured when write the content to main batch file. (Report to an administrator)\n");
                     error("Application will be exit on 5 seconds.");
@@ -807,8 +802,12 @@ public final class App {
             e.printStackTrace();
         }
 
-        // @Note This method initializes the main batch file
-        // runOsCommand("cmd", "/c", "cd " + file.getAbsolutePath().substring(0, file.getAbsolutePath().length() - file.getName().length() - 1), "start " + mainBatch.getName());
+        // @Note This represents the flag that controls the self initialization
+        final String selfInitializationString = System.getProperty("self_init");
+        if (selfInitializationString == null || selfInitializationString.equals("false")) {
+            // @Note This method initializes the main batch file
+            runOsCommand("cmd", "/c", "start " + mainBatch.getAbsolutePath());
+        }
     }
 
     /**
@@ -1402,7 +1401,9 @@ public final class App {
     public static void exit(long millis) {
         try {
             Thread.sleep(millis);
-            System.exit(-1);
+
+            // @Note Make by the safe exit method from the application
+            exit();
         } catch (Exception e) {
             error("An error occured when exit application. (Report to an administrator)\n");
             return;
