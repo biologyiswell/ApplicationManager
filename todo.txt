@@ -2,6 +2,20 @@ Comments
 -----------------
 
 1. (07/05/2018 14:23): App has self-initialization completely added
+2. (07/05/2018 17:59): App v1.1 is under development, the newer things that is added on the newer version from
+application is that now the application has not more "raw console", but an unique frame that will help on the display
+functions from the application commands
+    2.1. App v1.1 make fixes on bugs about commands that can not run UTF-8 characters in "raw console"
+    2.2. App v1.1 has a new console design
+        -> Why this change from consoles design? Like that the actual console that is "raw console" can not function
+        about some commands from app the app receives a new console design, this also is a future thinking about the
+        new commands that can be added
+3. (08/05/2018 16:32): The all reformateds/recodeds methods from the Application v1.1, take this updates to turn the
+internal more safe
+4. CHANGE VERSION (12/05/2018 11:13) (from v1.0, to v1.1): This version takes a new design of the console, this is used because to adapt the
+app to can create more commands, bugs that are occurs on the old design console is that the UTF-8 can not be parsed,
+but now the application makes the configuration to use the UTF-8, doing that the design from the console is general
+
 
 More Future Functions
 -----------------
@@ -11,10 +25,15 @@ support Windows OS that represents the Main Operational System that the Applicat
 
 Functions
 -----------------
-FIX (01/05/2018 20:46): A bug that occurs of testing out of IDE using Command Prompt from Windows, the Application
-Manager can not read UTF-8 characters making the "mkfile", "mkdir" that are commands fail
+ADD (v1.1) (09/05/2018 18:16): Makes the new model from the "dir" command, when the new console is implemented the
+first model to adapt now to the console to adjust the commands use the MS-DOS Directory Model Command then, on the next
+version the model will be updated
 
-ADD (30/04/2018 13:26): Add a help to each command
+ADD (v1.1) (08/05/2018 20:13): Makes a configuration to the console size
+
+ADD (07/05/2018 22:19): Add a log information folder, this helps to identify errors and bugs
+
+FIX (v1.1) (07/05/2018 17:57): A bug that occurs with JTextArea that the JScrollPane is not scrolling the text
 
 FIX (30/04/2018 12:22): The "dir" command to print the informations about files and
 directories, the problem that occurs to make this is that the files that contains big length get out
@@ -23,13 +42,47 @@ of columns
     MS-DOS that show informations about the files and directories, but to create a better concept of application making
     the model from application
 
-CORRECTION (30/04/2018 10:54): Correction that ExecutorService creates an instance each time that command
+Fixed Bugs & Changes
+-----------------
+ADDED (09/05/2018 18:11): A new flag "-in" has been added, this flag makes that the information produces by the command
+is displayed on the input
+
+ADDED (09/05/2018 18:11): "clear" command has been added on the "help" command
+
+REMOVED (09/05/2018 17:57): "editfile" command has been removed
+
+REFORMAT (08/05/2018 16:32): "runOsCommand" method has been reformated
+
+ADD (07/05/2018 21:21): "write" method has been added
+
+REFORMAT (07/05/2018 21:20): "read" method has been reformated
+
+COMMENT (07/05/2018 20:54): Is not more necessary the use from batchs files to execute the programs and the storage that
+save the batch files is removed, also this contribute to the future add support to other operational systems yet not
+tested
+
+CANCELLED (07/05/2018 20:38) ADD (30/04/2018 13:26): Add a help to each command
+    -> Why? The "help" command already shows the informations about each command
+
+FIXED (07/05/2018 20:37) REPORTED (01/05/2018 20:46): A bug that occurs of testing out of IDE using Command Prompt from Windows, the Application
+Manager can not read UTF-8 characters making the "mkfile", "mkdir" that are commands fail
+
+CANCELLED (07/05/2018 20:37) CORRECTION (30/04/2018 10:54): Correction that ExecutorService creates an instance each time that command
 "editfile" is called, this way is used to fix a bug that happen to insert editable line that represents the content
 from file, ExecutorService creates a new single threaded pool then the ExecutorService can be a static final variable
 (constant)
+    -> Why? The cancel from this correction is because this correction is not more need, this correction is fixed by
+    the implementation from the new console design
 
-Fixed Bugs & Additions
------------------
+ADDED (07/05/2018 20:32): A "echo" command has been added, this command prints a custom message to the console output
+
+REFORMAT (07/05/2018 19:36): App v1.1 has not more work with "parseCommand" method recursively, this create more
+stability to the application
+
+REFORMAT (07/05/2018 19:28): "error" method from App v1.0 has name changed to "errorf"
+
+REFORMAT (07/05/2018 19:10): "printf" method on the App v1.1 has been reformed
+
 CANCELLED (07/05/2018 14:21) ADD (01/05/2018 20:45): Support to an installer
     -> Why? The application not need more has support to an installer, because now the application has the
     self initialization and this make the configurations files and storage
