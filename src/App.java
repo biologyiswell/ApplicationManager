@@ -19,7 +19,7 @@ import java.util.Map;
  * This represents an app that handles files and folders in general
  *
  * @author biologysiwell (23/04/2018 20:46)
- * @version 1.1 (12/05/2018 11:14)
+ * @version 1.1.2 (13/05/2018 10:53)
  * @since 0.1
  */
 public class App {
@@ -47,7 +47,7 @@ public class App {
 
     public App() {
         // @Note Pre-initialization
-        this.frame = new JFrame("Application Manager v1.1");
+        this.frame = new JFrame("Application Manager v1.1.2");
         this.commandInputField = new JTextField("");
         this.commandArea = new JTextArea("");
         this.commandScrollPane = new JScrollPane(this.commandArea);
