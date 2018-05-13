@@ -440,38 +440,6 @@ public class App {
             }
             return;
         }
-        else if (checkCommand(command, "write")) {
-            // @Note Check if the command write has the necessary arguments
-            if (args.length < 3) {
-                this.usage("write <path> <content> [ -a ]");
-                return;
-            }
-
-            final String path = args[1];
-
-            // @Note Check if the path is null or empty
-            if (path == null || path.isEmpty()) {
-                printf("The path must be declared.\n");
-                return;
-            }
-
-            final File file = new File(path);
-
-            // @Note Check if the file is a directory
-            if (file.isDirectory()) {
-                printf("The file in path \"%\" can not be write because is a directory.\n", path);
-                return;
-            }
-
-            // @Note Joins the content from the command arguments
-            final String content = this.join(2, args.length, " ", args);
-            final boolean appends = this.hasFlag(args, "-a");
-
-            // @Note This method write the content into the file with append boolean value
-            this.write(file, content, appends);
-            printf("The file in path \"%\" has the content updated.\n", path);
-            return;
-        }
         // @Note List the all files and directories that contains into the directory
         else if (checkCommand(command, "dir")) {
             // @Note Check if the command dir has the necessary arguments
@@ -480,7 +448,7 @@ public class App {
                 return;
             }
 
-            final String path = args[1];
+            final String path = this.join(1, args.length, " ", args);
 
             // @Note Check if the path is null or empty
             if (path == null || path.isEmpty()) {
@@ -527,10 +495,10 @@ public class App {
                 return;
             }
 
-            final String path = args[1];
+            final String path = this.join(1, args.length, " ", args);
 
-            // @Note Check if the path is null or empty
-            if (path == null || path.isEmpty()) {
+            // @Note Check if the path is empty
+            if (path.isEmpty()) {
                 printf("The path must be declared.\n");
                 return;
             }
@@ -990,7 +958,6 @@ public class App {
         printf(" > read <file path> [ -in ]             - Read file content.\n");
         printf(" > register, reg <key> <path>           - Register a path by key.\n");
         printf(" > run <key>                            - Run an application.\n");
-        printf(" > write <file path> <content> [ -c ]   - Write a content to a file.\n");
         printf("Flags: \n");
         printf(" [ FLAG NAME ], [ FLAG FUNCTION ] (To display a flag in a command uses prefix \"-\"\n");
         printf(" > a                                    - Append content from file with new content.\n");

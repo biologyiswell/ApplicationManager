@@ -17,20 +17,23 @@ app to can create more commands, bugs that are occurs on the old design console 
 but now the application makes the configuration to use the UTF-8, doing that the design from the console is general
 5. Application version has been updated to "v1.1.2", this version fix the bugs from "v1.1"
 
-More Future Functions
------------------
-ADD (30/04/2018 13:31): Support to other Operational Systems like MAC and Linux, only now the Application Manager only
-support Windows OS that represents the Main Operational System that the Application is developed
-    -> STARTED (01/05/2018 21:56)
-
 Functions
 -----------------
-ADD (v1.1) (08/05/2018 20:13): Makes a configuration to the console size
+ADD (13/05/2018 14:12): Create more functionalities to flags
+
+ADD (08/05/2018 20:13): Makes a configuration to the console size
 
 ADD (07/05/2018 22:19): Add a log information folder, this helps to identify errors and bugs
 
 Fixed Bugs & Changes
 -----------------
+CANCELLED FIX (13/05/2018 14:36) REPORTED (13/05/2018 14:16): Fix a bug about the "write" command that the path can not be join because in this arguments
+contains the content that is write into the file and the flags, the need be a separator to can fix this, to can separate
+the path, content and flags
+    -> Why? The fix was cancelled because the "write" command was removed
+
+
+REMOVED (13/05/2018 14:35) REPORTED (13/05/2018 14:35): Removes the "write" command
 
 ADDED (13/05/2018 11:34): "editfile" command has been re-added, with a new console design, to create a more productivity
 on edit a file this command creates a console to edit the file
