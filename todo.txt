@@ -15,7 +15,7 @@ internal more safe
 4. CHANGE VERSION (12/05/2018 11:13) (from v1.0, to v1.1): This version takes a new design of the console, this is used because to adapt the
 app to can create more commands, bugs that are occurs on the old design console is that the UTF-8 can not be parsed,
 but now the application makes the configuration to use the UTF-8, doing that the design from the console is general
-
+5. Application version has been updated to "v1.1.2", this version fix the bugs from "v1.1"
 
 More Future Functions
 -----------------
@@ -25,25 +25,26 @@ support Windows OS that represents the Main Operational System that the Applicat
 
 Functions
 -----------------
-ADD (v1.1) (09/05/2018 18:16): Makes the new model from the "dir" command, when the new console is implemented the
-first model to adapt now to the console to adjust the commands use the MS-DOS Directory Model Command then, on the next
-version the model will be updated
-
 ADD (v1.1) (08/05/2018 20:13): Makes a configuration to the console size
 
 ADD (07/05/2018 22:19): Add a log information folder, this helps to identify errors and bugs
 
-FIX (v1.1) (07/05/2018 17:57): A bug that occurs with JTextArea that the JScrollPane is not scrolling the text
+Fixed Bugs & Changes
+-----------------
 
-FIX (30/04/2018 12:22): The "dir" command to print the informations about files and
+ADDED (13/05/2018 10:50) (v1.1) REPORTED (09/05/2018 18:16): Makes the new model from the "dir" command, when the new console is implemented the
+first model to adapt now to the console to adjust the commands use the MS-DOS Directory Model Command then, on the next
+version the model will be updated
+
+FIXED (13/05/2018 10:49) (v1.1) REPORTED (07/05/2018 17:57): A bug that occurs with JTextArea that the JScrollPane is not scrolling the text
+
+FIXED (13/05/2018 10:49) REPORTED (30/04/2018 12:22): The "dir" command to print the informations about files and
 directories, the problem that occurs to make this is that the files that contains big length get out
 of columns
     -> Solution: Change the model of print from "dir" command, the model that is applied on "dir" command is from
     MS-DOS that show informations about the files and directories, but to create a better concept of application making
     the model from application
 
-Fixed Bugs & Changes
------------------
 ADDED (09/05/2018 18:11): A new flag "-in" has been added, this flag makes that the information produces by the command
 is displayed on the input
 

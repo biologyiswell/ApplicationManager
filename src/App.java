@@ -1,6 +1,7 @@
 package app;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +38,7 @@ public class App {
     private final JFrame frame;
     private final JTextField commandInputField;
     private final JTextArea commandArea;
+    private final JScrollPane commandScrollPane;
 
     private final Map<String, String> keys;
 
@@ -48,6 +50,7 @@ public class App {
         this.frame = new JFrame("Application Manager v1.1");
         this.commandInputField = new JTextField("");
         this.commandArea = new JTextArea("");
+        this.commandScrollPane = new JScrollPane(this.commandArea);
 
         this.frame.setVisible(true);
         this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -61,15 +64,23 @@ public class App {
         this.commandInputField.addActionListener(new DispatchCommandEvent());
         this.commandInputField.setFont(new Font("Consolas", 0, 12));
 
-        this.commandArea.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.decode("#AAAAAA"), 1), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        this.commandArea.setSize(WIDTH - 50, HEIGHT - 100);
-        this.commandArea.setLocation(12 /* (int) (50 / 4) */, 10);
+        // this.commandArea.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.decode("#AAAAAA"), 1), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        // this.commandArea.setSize(WIDTH - 50, HEIGHT - 100);
+        // this.commandArea.setLocation(12 /* (int) (50 / 4) */, 10);
         this.commandArea.setEditable(false);
         this.commandArea.setVisible(true);
         this.commandArea.setFont(new Font("Consolas", 0, 14));
 
+        this.commandScrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.decode("#AAAAAA"), 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+        this.commandScrollPane.setBounds(12 /* (int) (50 / 4) */, 10, WIDTH - 50, HEIGHT - 100);
+
         this.frame.add(this.commandInputField);
-        this.frame.add(this.commandArea);
+        this.frame.add(this.commandScrollPane);
+
+        // @Note This method must be invoked again to update the all components that are added on the JFrame, otherwise
+        // the components is not show in the JFrame
+        //      -biologyiswell, 13 May 2018
+        this.frame.setVisible(true);
 
         this.keys = new LinkedHashMap<>();
 
@@ -794,10 +805,10 @@ public class App {
         // from the JTextArea, this represents a fix from a bug about JScrollPane
         // that not scrolling the JTextArea
         //      -biologyiswell, 07 May 2018
-        if (this.commandArea.getLineCount() >= 25) {
-            final String commandAreaText = this.commandArea.getText();
-            this.commandArea.setText(commandAreaText.substring(commandAreaText.indexOf('\n'), commandAreaText.length()).trim() + "\n");
-        }
+//        if (this.commandArea.getLineCount() >= 25) {
+//            final String commandAreaText = this.commandArea.getText();
+//            this.commandArea.setText(commandAreaText.substring(commandAreaText.indexOf('\n'), commandAreaText.length()).trim() + "\n");
+//        }
 
         // @Note To make the process more faster when the arguments from string is null or arguments has length 0,
         // this condition makes that the print to console output prints the message
@@ -814,6 +825,9 @@ public class App {
 
             this.commandArea.append((printWithDate ? "[" + DATE_FORMAT.format(System.currentTimeMillis()) + "] " : "") + sb.toString());
         }
+
+        // @Note This method makes that the vertical scrollbar to follows the displaying from the current content
+        this.commandScrollPane.getVerticalScrollBar().setValue(this.commandScrollPane.getVerticalScrollBar().getMaximum());
     }
 
     /**
