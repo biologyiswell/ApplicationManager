@@ -294,111 +294,133 @@ public class App {
         else if (checkCommand(command, "mkdir")) {
             // @Note Check if the command to create the directory has the necessary arguments (<path>)
             if (args.length < 2) {
-                this.usage("mkdir <path> [ -rc ]");
+                this.usage("mkdir [ -rc ] <paths...>");
                 return;
             }
-
-            final String path = args[1];
-
-            // @Note Check if the path is null or empty
-            if (path == null || path.isEmpty()) {
-                printf("The path must be declared.\n");
-                return;
-            }
-
-            final File file = new File(path);
 
             // @Note This boolean represents if the flag "recreates" has enabled, this flag makes that the if the file
             // exists then deletes the file and re-create the file
             final boolean recreates = this.hasFlag(args, "-rc");
+            final String path = this.join(recreates ? 2 : 1, args.length, " ", args);
 
-            // @Note Check if the file not exists
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            // @Note Check if the file exists and is to recreates
-            else if (recreates) {
-                this.delete(file);
-                file.mkdirs();
-            } else {
-                printf("The directory in path \"%\" can not be created because already exists. (To bypass this use the flag \"-rc\" in the command)\n", path);
+            // @Note Check if the path is null or empty
+            if (path.isEmpty()) {
+                printf("The path must be declared.\n");
                 return;
             }
 
-            printf("The directory in path \"%\" has been created.\n", path);
+            final String[] multiplesPath = path.split(",");
+
+            // @Note For-each loop by each current path that contains in the multiples path separated by separator ","
+            for (final String currentPath : multiplesPath) {
+                final File file = new File(currentPath.trim());
+
+                // @Note Check if the file not exists
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                // @Note Check if the file exists and is to recreates
+                else if (recreates) {
+                    this.delete(file);
+                    file.mkdirs();
+                } else {
+                    printf("The directory in path \"%\" can not be created because already exists. (To bypass this use the flag \"-rc\" in the command)\n", file.getAbsolutePath());
+
+                    // @Note Do not use "return" and "break" here, with this the for-each loop is broke
+                    continue;
+                }
+
+                printf("The directory in path \"%\" has been created.\n", file.getAbsolutePath());
+            }
             return;
         }
         // @Note Makes a file
         else if (checkCommand(command, "mkfile")) {
             // @Note Check if the command to makes a file has the necessary arguments
             if (args.length < 2) {
-                this.usage("mkfile <path> [ -rc ]");
+                this.usage("mkfile [ -rc ] <paths...>");
                 return;
             }
-
-            final String path = args[1];
-
-            // @Note Check if the path is null or empty
-            if (path == null || path.isEmpty()) {
-                printf("The path must be declared.\n");
-                return;
-            }
-
-            final File file = new File(path);
 
             // @Note This boolean represents if the flag "recreates" has enabled, this flag makes that the if the file
             // exists then deletes the file and re-create the file
             final boolean recreates = this.hasFlag(args, "-rc");
+            final String path = this.join(recreates ? 2 : 1, args.length, " ", args);
 
-            try {
-                // @Note Check if the file not exists
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-                // @Note Check if the file exists and if the command has the recreates flag
-                else if (recreates) {
-                    this.delete(file);
-                    file.createNewFile();
-                } else {
-                    printf("The file in path \"%\" can not be created because already exists. (To bypass this use the flag \"-rc\" in the command)\n", path);
-                    return;
-                }
-            } catch (Exception e) {
-                errorf("An internal error occured when executes the command \"mkfile\".\n");
-                e.printStackTrace();
+            // @Note Check if the path is null or empty
+            if (path.isEmpty()) {
+                printf("The path must be declared.\n");
+                return;
             }
 
-            printf("The file in path \"%\" has been created.\n", path);
+            final String[] multiplesPath = path.split(",");
+
+            // @Note For-each loop by each current path that contains in the multiples path separated by separator ","
+            for (final String currentPath : multiplesPath) {
+                final File file = new File(currentPath.trim());
+                try {
+                    // @Note Check if the file not exists
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    // @Note Check if the file exists and if the command has the recreates flag
+                    else if (recreates) {
+                        this.delete(file);
+                        file.createNewFile();
+                    } else {
+                        printf("The file in path \"%\" can not be created because already exists. (To bypass this use the flag \"-rc\" in the command)\n", file.getAbsolutePath());
+
+                        // @Note Do not use "return" and "break" here, with this the for-each loop is broke
+                        continue;
+                    }
+                } catch (Exception e) {
+                    errorf("An internal error occured when executes the command \"mkfile\".\n");
+                    e.printStackTrace();
+                }
+
+                printf("The file in path \"%\" has been created.\n", file.getAbsolutePath());
+            }
+
             return;
         }
         // @Note Makes the delete from the file
         else if (checkCommand(command, "deletefile", "delfile")) {
             // @Note Check if the delete file command has the necessary arguments (<path>)
             if (args.length < 2) {
-                this.usage("deletefile <path>");
+                this.usage("deletefile <paths...>");
                 return;
             }
 
-            final String path = args[1];
+            final String path = this.join(1, args.length, " ", args);
 
             // @Note Check if the path is null or empty
-            if (path == null || path.isEmpty()) {
+            if (path.isEmpty()) {
                 printf("The path must be declared.\n");
                 return;
             }
 
-            final File file = new File(path);
+            final String[] multiplesPath = path.split(",");
 
-            // @Note Check if the file exists to delete
-            if (!file.exists()) {
-                printf("The file in path \"%\" can not be deleted because not exists.\n", path);
-                return;
+            // @Note For-each loop from the multiples path string array
+            for (final String currentPath : multiplesPath) {
+                // @Note Use the trim method to remove the around blankspaces, because the separator can be has a
+                // blankspace
+                final File file = new File(currentPath.trim());
+
+                // @Note Check if the file exists to delete
+                if (!file.exists()) {
+                    printf("The file in path \"%\" can not be deleted because not exists.\n", file.getAbsolutePath());
+
+                    // @Note Do not use "return" and "break" here, with this the for-each loop is broke
+                    continue;
+                }
+
+                // @Note Delete the file or directory
+                this.delete(file);
+
+                printf("The % in path \"%\" has been deleted.\n", file.isDirectory() ? "directory" : "file", file.getAbsolutePath());
             }
 
-            // @Note Delete the file or directory
-            this.delete(file);
-
-            printf("The % \"%\" in path \"%\" has been deleted.\n", file.isDirectory() ? "directory" : "file", path);
             return;
         }
         // @Note Reads the content from a file
@@ -953,8 +975,8 @@ public class App {
         printf(" > edit <key> <new path>                - Edit a value from a key.\n");
         printf(" > editfile <file path>                 - Edit file content.\n");
         printf(" > list                                 - List all registered keys.\n");
-        printf(" > mkdir <file path> [ - rc ]           - Make a directory.\n");
-        printf(" > mkfile <file path> [ -rc ]           - Make a file.\n");
+        printf(" > mkdir [ -rc ] <paths...>             - Make a directory.\n");
+        printf(" > mkfile [ -rc ] <paths...>            - Make a file.\n");
         printf(" > read <file path> [ -in ]             - Read file content.\n");
         printf(" > register, reg <key> <path>           - Register a path by key.\n");
         printf(" > run <key>                            - Run an application.\n");

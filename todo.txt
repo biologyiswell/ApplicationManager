@@ -27,6 +27,21 @@ ADD (07/05/2018 22:19): Add a log information folder, this helps to identify err
 
 Fixed Bugs & Changes
 -----------------
+ADDED (13/05/2018 20:25) REPORTED (13/05/2018 19:39): Make the command "mkdir" can create multiples paths on a single line using a separator that is
+",", this create more flexbility to create directories, to do this the format of the command must be changed, the current
+format makes that the "mkdir" command in the first argument represents the file path and the next represents the flag
+from the command, now to resolve this the argument from the flag from command must be changed to the first argument, and
+the next arguments represents the file paths
+
+ADDED (13/05/2018 20:25) REPORTED (13/05/2018 19:38): Make the command "mkfile" can create multiples paths on a single line using a separator that is
+",", this create more flexbility to create files, to do this the format of the command must be changed, the current
+format makes that the "mkfile" command in the first argument represents the file path and the next represents the flag
+from the command, now to resolve this the argument from the flag from command must be changed to the first argument, and
+the next arguments represents the file paths
+
+ADDED (13/05/2018 19:38) REPORTED (13/05/2018 19:23): Make the command "deletefile" can delete multiples paths on a
+single line using a separator that is ",", this create more flexibility to delete files and folders
+
 CANCELLED FIX (13/05/2018 14:36) REPORTED (13/05/2018 14:16): Fix a bug about the "write" command that the path can not be join because in this arguments
 contains the content that is write into the file and the flags, the need be a separator to can fix this, to can separate
 the path, content and flags
