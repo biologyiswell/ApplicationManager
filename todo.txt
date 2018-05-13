@@ -32,6 +32,9 @@ ADD (07/05/2018 22:19): Add a log information folder, this helps to identify err
 Fixed Bugs & Changes
 -----------------
 
+ADDED (13/05/2018 11:34): "editfile" command has been re-added, with a new console design, to create a more productivity
+on edit a file this command creates a console to edit the file
+
 ADDED (13/05/2018 10:50) (v1.1) REPORTED (09/05/2018 18:16): Makes the new model from the "dir" command, when the new console is implemented the
 first model to adapt now to the console to adjust the commands use the MS-DOS Directory Model Command then, on the next
 version the model will be updated

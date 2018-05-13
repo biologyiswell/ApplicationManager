@@ -520,6 +520,74 @@ public class App {
             this.destroyApp();
             return;
         }
+        else if (checkCommand(command, "editfile")) {
+            // @Note Check if the command has the necessary arguments
+            if (args.length < 2) {
+                this.usage("editfile <file path>");
+                return;
+            }
+
+            final String path = args[1];
+
+            // @Note Check if the path is null or empty
+            if (path == null || path.isEmpty()) {
+                printf("The path must be declared.\n");
+                return;
+            }
+
+            final File file = new File(path);
+
+            // @Note Check if the file is not exists
+            if (!file.exists()) {
+                printf("The file in path \"%\" can not be edited, because not exists.\n", path);
+                return;
+            }
+
+            // @Note Check if the file represents a directory
+            if (file.isDirectory()) {
+                printf("The file in path \"%\" can not edited, because is a directory.", path);
+                return;
+            }
+
+            printf("Editing file %...\n", path);
+
+            final JFrame efFrame = new JFrame("Edit file: " + path);
+            efFrame.setSize(1280, 720);
+            efFrame.setLayout(null);
+            efFrame.setVisible(true);
+            efFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            efFrame.setResizable(false);
+
+            final JTextArea efTextArea = new JTextArea();
+            efTextArea.setFont(new Font("Consolas", 0, 14));
+
+            final JScrollPane efScrollPane = new JScrollPane(efTextArea);
+            efScrollPane.setBounds(12 /* (int) (50 / 4 )*/, 10, efFrame.getWidth() - 32 /* (int) ((50 / 4) * 2) + 8 */, efFrame.getHeight() - 100);
+            efScrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.decode("#AAAAAA"), 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+
+            final JButton efButton = new JButton("Save file");
+            efButton.setSize(150, 50);
+            efButton.setLocation((efFrame.getWidth() / 2) - (efButton.getWidth() / 2), efFrame.getHeight() - (efButton.getHeight() + (efButton.getHeight() / 2) + 8));
+            efButton.addActionListener(e -> {
+                // @Note This method makes that the append text is false, because the content that is displayed on the
+                // JTextArea represents the current content from the file
+                this.write(file, efTextArea.getText(), false);
+                printf("File in path \"%\" has been edited.\n", path);
+
+                // @Note Close the edit file frame
+                efFrame.dispose();
+            });
+
+            efFrame.add(efButton);
+            efFrame.add(efScrollPane);
+            efFrame.setVisible(true);
+
+            // @Note Read the content that contains in the file
+            final String content = this.read(file);
+
+            efTextArea.setText(content);
+            return;
+        }
 
         // @Note If the code arrives here this means that the command is not parse by the command checkers,
         // then the command is not found by the application
@@ -908,13 +976,14 @@ public class App {
         printf("\n");
         printf("Commands: \n");
         printf(" [ COMMAND NAME ], [ COMMAND ALIASES ] [< COMMAND ARGUMENTS >] [[ ARBITRARY FLAGS ]] - [ COMMAND DESCRIPTION ]\n");
-        printf(" > clear                                - Clears screen.");
+        printf(" > clear                                - Clear screen.\n");
         printf(" > copy <from path> <to path>           - Copy a file or directory to a new path.\n");
         printf(" > delete, del <key>                    - Delete a key that is registered.\n");
         printf(" > deletefile, delfile <file path>      - Deletes a file.\n");
         printf(" > destroy                              - Delete Application Manager Database. (!!!!)\n");
         printf(" > dir <file path> [file index]         - List the all files that contains in directory.\n");
         printf(" > edit <key> <new path>                - Edit a value from a key.\n");
+        printf(" > editfile <file path>                 - Edit file content.\n");
         printf(" > list                                 - List all registered keys.\n");
         printf(" > mkdir <file path> [ - rc ]           - Make a directory.\n");
         printf(" > mkfile <file path> [ -rc ]           - Make a file.\n");
