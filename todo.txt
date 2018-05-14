@@ -27,6 +27,9 @@ ADD (07/05/2018 22:19): Add a log information folder, this helps to identify err
 
 Fixed Bugs & Changes
 -----------------
+FIXED (13/05/2018 22:14) REPORTED (13/05/2018 21:58): Fix a bug that occurs with "list" command that prints to console output more lines that will be
+print
+
 ADDED (13/05/2018 20:25) REPORTED (13/05/2018 19:39): Make the command "mkdir" can create multiples paths on a single line using a separator that is
 ",", this create more flexbility to create directories, to do this the format of the command must be changed, the current
 format makes that the "mkdir" command in the first argument represents the file path and the next represents the flag

@@ -137,12 +137,12 @@ public final class App {
         final String command = args[0];
 
         // @Note Print the help commands
-        if (command.equalsIgnoreCase("help")) {
+        if (checkCommand(command, "help")) {
             this.printHelpCommands();
             return;
         }
         // @Note Prints a custom message using echo command
-        else if (command.equalsIgnoreCase("echo")) {
+        else if (checkCommand(command, "echo")) {
             final String echoMessage = join(1, args.length, " ", args);
 
             printf(echoMessage + "\n");
@@ -162,9 +162,9 @@ public final class App {
             printf("\n");
             int index = 1;
             for (final Map.Entry<String, String> entry : this.keys.entrySet()) {
-                printf("%. % -> %", index++, entry.getKey(), entry.getValue());
+                System.out.println(entry.getValue().length());
+                printf("%. % -> %\n", index++, entry.getKey(), entry.getValue());
             }
-            printf("\n");
             return;
         }
         // @Note Register a key that makes the easy to access the application by path
@@ -624,15 +624,13 @@ public final class App {
         // @Note Read the content from the storage file and split the content in lines
         final String[] lines = this.read(storageFile).split(System.lineSeparator());
         for (final String line : lines) {
-            // @Note Check if the line length is equals 0 then, the process of parse
-            // can be continue
-            if (line.length() == 0) {
+            // @Note Check if the line is empty then, the process of parse can be continue
+            if (line.isEmpty() || line.equals("\n")) {
                 continue;
             }
 
             // @Note In this string array contains the key and path
             final String[] keyAndValue = line.split(" ");
-
             this.keys.put(keyAndValue[0], keyAndValue[1]);
         }
 
@@ -654,7 +652,8 @@ public final class App {
         }
 
         // @Note Write the content from keys map into the storage file
-        write(this.getStorageFile(), sb.toString(), false);
+        this.write(this.getStorageFile(), sb.toString(), false);
+        System.out.println("Application has been saved.");
     }
 
     // Methods
@@ -1269,7 +1268,7 @@ public final class App {
         try (final FileWriter writer = new FileWriter(file)) {
             // @Note This variable check if the write from the content into the file is by re-write or by append
             // content
-            final String newContent = (appendContent ? read(file) : "") + content;
+            final String newContent = (appendContent ? this.read(file) : "") + content;
 
             // @Note This method write the new content into the file
             writer.write(newContent);
@@ -1327,6 +1326,17 @@ public final class App {
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append('\n');
             }
+
+            // @Note This condition checks if the StringBuilder is bigger than 0
+            if (sb.length() > 0) {
+                // @Note This method deletes the last character that represents the "System.lineSeparator()" that represents
+                // the separator line string that is added on the last for-each loop, this method fixes a bug that makes the
+                // the "saveApplicationDatabase" method saves the new line and make that the when the method
+                // "loadApplicationDatabase" is executed make the load from the last key path the new line characters
+                //      -biologyiswell, 13 May 2018
+                sb.deleteCharAt(sb.length() - 1);
+            }
+
             return sb.toString();
         } catch (IOException e) {
             errorf("An internal error occured when read a file content (with exception). (Report to an administrator)\n");
@@ -1387,7 +1397,7 @@ public final class App {
             // @Note This condition represents if the save of database is to be ignored
             if (!ignoreSaveApplicationDatabase) {
                 // @Note Save the application database
-                saveApplicationDatabase();
+                this.saveApplicationDatabase();
             }
 
             // @Note Close the application
