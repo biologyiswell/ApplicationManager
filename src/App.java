@@ -44,7 +44,8 @@ public final class App {
     /**
      * Ignore Database Save, flag,
      * This represents the ignore database save flag that makes when the application is closed the application not
-     * makes the save from the application to storage file
+     * makes the save from the application to storage file, this flag ignore the save application to storage file in
+     * "shutdown hook" from the application that represents when the application is closed
      * @since 1.1.3
      */
     private static final int IGNORE_DATABASE_SAVE = 0x2;
@@ -550,7 +551,6 @@ public final class App {
             // application flags
             //      -biologyiswell, 14 May 2018
             this.flags &= ~DESTROY_APP_FLAG;
-            this.flags |= IGNORE_DATABASE_SAVE;
 
             printf("Destroying app...\n");
             this.destroyApp();
@@ -622,6 +622,18 @@ public final class App {
             final String content = this.read(file);
 
             efTextArea.setText(content);
+            return;
+        }
+        // @Note Makes the exit from application
+        else if (checkCommand(command, "exit")) {
+            // @Note When the save from application to storage file is made by a command then, the method to exit
+            // the application is executed but when the close application the "exit" method is executed again, and
+            // to remove this configuration is added the flag to ignore the save from application to storage file
+            // by the "shutdown hook"
+            //      -biologyiswell, 14 May 2018
+            this.flags |= IGNORE_DATABASE_SAVE;
+
+            this.exit(0);
             return;
         }
 
@@ -797,6 +809,11 @@ public final class App {
      */
     private void destroyApp() {
         try {
+            // @Note This flag must be implicit in the destruction application because this method has the functions
+            // to delete the files and need be ignore the save application to storage file
+            //      -biologyiswell, 14 May 2018
+            this.flags |= IGNORE_DATABASE_SAVE;
+
             // @Note Deletes the storage file
             this.delete(this.getStorageFile());
             this.keys.clear();

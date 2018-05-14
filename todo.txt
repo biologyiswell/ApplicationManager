@@ -19,11 +19,6 @@ but now the application makes the configuration to use the UTF-8, doing that the
 
 Functions
 -----------------
-ADD (14/05/2018 19:08): Add "exit" command
-
-ADD (14/05/2018 15:31): Makes that when user executes the command "destroy", that makes the destruction from the
-application, but this command need be a confirmation about this process
-
 ADD (13/05/2018 14:12): Create more functionalities to flags
 
 ADD (08/05/2018 20:13): Makes a configuration to the console size
@@ -34,6 +29,11 @@ ADD (07/05/2018 22:19): Add a log information folder, this helps to identify err
 
 Fixed Bugs & Changes
 -----------------
+ADDED (14/05/2018 19:18) REPORTED (14/05/2018 19:08): Add "exit" command
+
+ADDED (14/05/2018 19:13) REPORTED (14/05/2018 15:31): Makes that when user executes the command "destroy", that makes the destruction from the
+application, but this command need be a confirmation about this process
+
 FIXED (14/05/2018 15:30) REPORTED (14/05/2018 15:27): Fix the bug about the command "read", like that the paths can be separate by a " ", this makes
 that the "read" method makes the read from the all arguments, then the next argument in the current format from the
 "read" method represents the "-in" flag then, this method makes a change to a new format that makes that the flag change
