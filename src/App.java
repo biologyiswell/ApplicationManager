@@ -19,7 +19,7 @@ import java.util.Map;
  * This represents an app that handles files and folders in general
  *
  * @author biologysiwell (23/04/2018 20:46)
- * @version 1.1.2 (13/05/2018 10:53)
+ * @version 1.1.3 (14/05/2018 15:33)
  * @since 0.1
  */
 public final class App {
@@ -47,7 +47,7 @@ public final class App {
 
     public App() {
         // @Note Pre-initialization
-        this.frame = new JFrame("Application Manager v1.1.2");
+        this.frame = new JFrame("Application Manager v1.1.3");
         this.commandInputField = new JTextField("");
         this.commandArea = new JTextArea("");
         this.commandScrollPane = new JScrollPane(this.commandArea);
@@ -59,7 +59,7 @@ public final class App {
         this.frame.setResizable(false);
         // @Todo Set to the application frame set the location to the center from the window
 
-        this.commandInputField.setSize(WIDTH - 50, 20);
+        this.commandInputField.setSize(WIDTH - 32 /* (int) ((50 / 4) * 2) + 8 */, 20);
         this.commandInputField.setLocation(12 /* (int) (50 / 4) */, HEIGHT - (50 + this.commandInputField.getHeight()));
         this.commandInputField.addActionListener(new DispatchCommandEvent());
         this.commandInputField.setFont(new Font("Consolas", 0, 12));
@@ -72,7 +72,7 @@ public final class App {
         this.commandArea.setFont(new Font("Consolas", 0, 14));
 
         this.commandScrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.decode("#AAAAAA"), 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
-        this.commandScrollPane.setBounds(12 /* (int) (50 / 4) */, 10, WIDTH - 50, HEIGHT - 100);
+        this.commandScrollPane.setBounds(12 /* (int) (50 / 4) */, 10, WIDTH - 32 /* (int) ((50 / 4) * 2) + 8 */, HEIGHT - 100);
 
         this.frame.add(this.commandInputField);
         this.frame.add(this.commandScrollPane);
@@ -427,20 +427,22 @@ public final class App {
         else if (checkCommand(command, "read")) {
             // @Note Check if the command has the necessary arguments
             if (args.length < 2) {
-                this.usage("read <path>");
+                this.usage("read [ -in ] <path>");
                 return;
             }
 
-            final String path = args[1];
+            // @Note This represents the "input display" flag that is represented by "-in", this flag makes that the
+            // read content that is read from the file is write in the console input
+            final boolean inputDisplay = this.hasFlag(args, "-in");
+            final String path = this.join(inputDisplay ? 2 : 1, args.length, " ", args);
 
-            // @Note Check if the path is null or empty
-            if (path == null || path.isEmpty()) {
+            // @Note Check if the path is empty
+            if (path.isEmpty()) {
                 printf("The path must be declared.\n");
                 return;
             }
 
             final File file = new File(path);
-            final boolean inputDisplay = this.hasFlag(args, "-in");
 
             // @Note Check if the file is a directory
             if (file.isDirectory()) {
@@ -448,6 +450,7 @@ public final class App {
                 return;
             }
 
+            // @Note This represents the content that is read from the file
             final String content = this.read(file);
 
             printf("\n");
@@ -976,7 +979,7 @@ public final class App {
         printf(" > list                                 - List all registered keys.\n");
         printf(" > mkdir [ -rc ] <paths...>             - Make a directory.\n");
         printf(" > mkfile [ -rc ] <paths...>            - Make a file.\n");
-        printf(" > read <file path> [ -in ]             - Read file content.\n");
+        printf(" > read [ -in ] <file path>             - Read file content.\n");
         printf(" > register, reg <key> <path>           - Register a path by key.\n");
         printf(" > run <key>                            - Run an application.\n");
         printf("Flags: \n");

@@ -19,25 +19,35 @@ but now the application makes the configuration to use the UTF-8, doing that the
 
 Functions
 -----------------
+ADD (14/05/2018 15:31): Makes that when user executes the command "destroy", that makes the destruction from the
+application, but this command need be a confirmation about this process
+
 ADD (13/05/2018 14:12): Create more functionalities to flags
 
 ADD (08/05/2018 20:13): Makes a configuration to the console size
+    -> (14/05/2018 15:26): To make this changes about set a configuration in console size, need be adjust the sizes to make automatically
+    adjustment
 
 ADD (07/05/2018 22:19): Add a log information folder, this helps to identify errors and bugs
 
 Fixed Bugs & Changes
 -----------------
+FIXED (14/05/2018 15:30) REPORTED (14/05/2018 15:27): Fix the bug about the command "read", like that the paths can be separate by a " ", this makes
+that the "read" method makes the read from the all arguments, then the next argument in the current format from the
+"read" method represents the "-in" flag then, this method makes a change to a new format that makes that the flag change
+to the first argument
+
 FIXED (13/05/2018 22:14) REPORTED (13/05/2018 21:58): Fix a bug that occurs with "list" command that prints to console output more lines that will be
 print
 
 ADDED (13/05/2018 20:25) REPORTED (13/05/2018 19:39): Make the command "mkdir" can create multiples paths on a single line using a separator that is
-",", this create more flexbility to create directories, to do this the format of the command must be changed, the current
+",", this create more flexibility to create directories, to do this the format of the command must be changed, the current
 format makes that the "mkdir" command in the first argument represents the file path and the next represents the flag
 from the command, now to resolve this the argument from the flag from command must be changed to the first argument, and
 the next arguments represents the file paths
 
 ADDED (13/05/2018 20:25) REPORTED (13/05/2018 19:38): Make the command "mkfile" can create multiples paths on a single line using a separator that is
-",", this create more flexbility to create files, to do this the format of the command must be changed, the current
+",", this create more flexIbility to create files, to do this the format of the command must be changed, the current
 format makes that the "mkfile" command in the first argument represents the file path and the next represents the flag
 from the command, now to resolve this the argument from the flag from command must be changed to the first argument, and
 the next arguments represents the file paths
