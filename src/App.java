@@ -33,6 +33,22 @@ public final class App {
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 500;
 
+    /**
+     * Destroy App Flag, flag,
+     * This represents the destruction application flag, that marks in application that the application will be
+     * destructed
+     * @since 1.1.3
+     */
+    private static final int DESTROY_APP_FLAG = 0x1;
+
+    /**
+     * Ignore Database Save, flag,
+     * This represents the ignore database save flag that makes when the application is closed the application not
+     * makes the save from the application to storage file
+     * @since 1.1.3
+     */
+    private static final int IGNORE_DATABASE_SAVE = 0x2;
+
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     private final JFrame frame;
@@ -42,9 +58,16 @@ public final class App {
 
     private final Map<String, String> keys;
 
+    /**
+     * Flags, flag,
+     * This variable represents the flag that are enabled in the application, this makes the controls for some commands
+     * and operations that makes the control from the application
+     * @since 1.1.3
+     */
+    private int flags;
+
     // @Note This class represents the Test class from the Application,
     // this class implements the Application Manager to a JFrame
-
     public App() {
         // @Note Pre-initialization
         this.frame = new JFrame("Application Manager v1.1.3");
@@ -85,9 +108,11 @@ public final class App {
         this.keys = new LinkedHashMap<>();
 
         // @Note Initialization
-        // @Note This method makes that a hook to the method "saveApplicationDatabase" to be executed when the console
+        // @Note This method makes that a hook to the method "saveApplicationDatabase" to be executed when the console.
+        // @Note (14/05/2018 19:07) Now the method has been changed form the "saveApplicationDatabase" to "exit",
+        // because the exit method represents a safely and configurable method
         // is closed, -biologyiswell 08 May 2018
-        Runtime.getRuntime().addShutdownHook(new Thread(this::saveApplicationDatabase));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> this.exit(0, (this.flags & IGNORE_DATABASE_SAVE) != 0)));
 
         this.loadApplicationDatabase();
         this.printWelcome();
@@ -510,6 +535,24 @@ public final class App {
         }
         // @Note Makes the destroy from the application
         else if (checkCommand(command, "destroy")) {
+            // @Note This condition makes the check from the destroy command, this condition checks if the application
+            // flags has not the destruction application flag enabled
+            if ((this.flags & DESTROY_APP_FLAG) == 0) {
+                this.flags |= DESTROY_APP_FLAG;
+
+                printf("To confirm the process type \"destroy\", again.\n");
+                return;
+            }
+
+            // @Note This not serves more, but to make the operation more safely is required to remove the destruction
+            // application flag from the application flags, but when this command is executed the application has not
+            // save the application to storage file, to do this need be add the flag "IGNORE_DATABASE_SAVE" to the
+            // application flags
+            //      -biologyiswell, 14 May 2018
+            this.flags &= ~DESTROY_APP_FLAG;
+            this.flags |= IGNORE_DATABASE_SAVE;
+
+            printf("Destroying app...\n");
             this.destroyApp();
             return;
         }
@@ -762,7 +805,7 @@ public final class App {
             printf("Application will be shutdown in 3 seconds.");
 
             // @Note This method exit the application but not save the application in database
-            exit(3, true);
+            exit(5000, true);
         } catch (Exception e) {
             errorf("An internal error occured when destroy the application. (Report to an administrator)\n");
         }

@@ -19,6 +19,8 @@ but now the application makes the configuration to use the UTF-8, doing that the
 
 Functions
 -----------------
+ADD (14/05/2018 19:08): Add "exit" command
+
 ADD (14/05/2018 15:31): Makes that when user executes the command "destroy", that makes the destruction from the
 application, but this command need be a confirmation about this process
 
@@ -47,7 +49,7 @@ from the command, now to resolve this the argument from the flag from command mu
 the next arguments represents the file paths
 
 ADDED (13/05/2018 20:25) REPORTED (13/05/2018 19:38): Make the command "mkfile" can create multiples paths on a single line using a separator that is
-",", this create more flexIbility to create files, to do this the format of the command must be changed, the current
+",", this create more flexibility to create files, to do this the format of the command must be changed, the current
 format makes that the "mkfile" command in the first argument represents the file path and the next represents the flag
 from the command, now to resolve this the argument from the flag from command must be changed to the first argument, and
 the next arguments represents the file paths
