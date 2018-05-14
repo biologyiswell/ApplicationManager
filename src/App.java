@@ -22,7 +22,7 @@ import java.util.Map;
  * @version 1.1.2 (13/05/2018 10:53)
  * @since 0.1
  */
-public class App {
+public final class App {
 
     public static void main(String[] args) {
         new App();
@@ -969,7 +969,7 @@ public class App {
         printf(" > clear                                - Clear screen.\n");
         printf(" > copy <from path> <to path>           - Copy a file or directory to a new path.\n");
         printf(" > delete, del <key>                    - Delete a key that is registered.\n");
-        printf(" > deletefile, delfile <file path>      - Deletes a file.\n");
+        printf(" > deletefile, delfile <paths...>       - Deletes a file.\n");
         printf(" > destroy                              - Delete Application Manager Database. (!!!!)\n");
         printf(" > dir <file path> [file index]         - List the all files that contains in directory.\n");
         printf(" > edit <key> <new path>                - Edit a value from a key.\n");
