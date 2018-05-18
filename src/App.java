@@ -1,7 +1,6 @@
 package app;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +10,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 
 /**
  * App, class,
@@ -52,7 +50,9 @@ public final class App {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final JFrame frame;
+
     private final JTextField commandInputField;
     private final JTextArea commandArea;
     private final JScrollPane commandScrollPane;
@@ -68,8 +68,11 @@ public final class App {
     private int flags;
 
     // @Note This class represents the Test class from the Application,
-    // this class implements the Application Manager to a JFrame
-    public App() {
+    // this class implements the Application Manager to a JFrame,
+    // @Note The application can be private in this versions, in the next versions about the application the App class
+    // can be modified to public
+    //      -biologyiswell, 17 May 2018
+    private App() {
         // @Note Pre-initialization
         this.frame = new JFrame("Application Manager v1.1.3");
         this.commandInputField = new JTextField("");
@@ -86,14 +89,14 @@ public final class App {
         this.commandInputField.setSize(WIDTH - 32 /* (int) ((50 / 4) * 2) + 8 */, 20);
         this.commandInputField.setLocation(12 /* (int) (50 / 4) */, HEIGHT - (50 + this.commandInputField.getHeight()));
         this.commandInputField.addActionListener(new DispatchCommandEvent());
-        this.commandInputField.setFont(new Font("Consolas", 0, 12));
+        this.commandInputField.setFont(new Font("Consolas", Font.PLAIN, 12));
 
         // this.commandArea.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.decode("#AAAAAA"), 1), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         // this.commandArea.setSize(WIDTH - 50, HEIGHT - 100);
         // this.commandArea.setLocation(12 /* (int) (50 / 4) */, 10);
         this.commandArea.setEditable(false);
         this.commandArea.setVisible(true);
-        this.commandArea.setFont(new Font("Consolas", 0, 14));
+        this.commandArea.setFont(new Font("Consolas", Font.PLAIN, 14));
 
         this.commandScrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.decode("#AAAAAA"), 1), BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         this.commandScrollPane.setBounds(12 /* (int) (50 / 4) */, 10, WIDTH - 32 /* (int) ((50 / 4) * 2) + 8 */, HEIGHT - 100);
@@ -128,8 +131,6 @@ public final class App {
      * @since 1.1
      */
     class DispatchCommandEvent implements ActionListener {
-        private int line = 0;
-
         @Override
         public void actionPerformed(ActionEvent e) {
             // @Note Parse the command and clear input field
@@ -502,7 +503,7 @@ public final class App {
             final String path = this.join(1, args.length, " ", args);
 
             // @Note Check if the path is null or empty
-            if (path == null || path.isEmpty()) {
+            if (path.isEmpty()) {
                 printf("The path must be declared.\n");
                 return;
             }
@@ -518,13 +519,21 @@ public final class App {
             // @Note This array represents the all files that contains in the directory
             final File[] listFiles = file.listFiles();
 
+            // @Note This conditon makes the check about the list files if is equals null, this condition must be check
+            // because to not cause an error when get the files that contains in the array and the length from the array
+            //      -biologyiswell, 18 May 2018
+            if (listFiles == null) {
+                errorf("File in path \"%\" can not be listed.\n", file.getAbsolutePath());
+                return;
+            }
+
             printf("\n");
             printf("  Listed directory: %.\n", path);
             printf("  Listed files: %.\n", listFiles.length);
             printf("\n");
             // @Note List the all files that contains in the directory
             for (final File fileIn : listFiles) {
-                printf("% % % %\n", DATE_FORMAT.format(fileIn.lastModified()) + this.spacing(2), (fileIn.isDirectory() ? "<DIR>" + this.spacing(1) : this.spacing(5)), fileIn.isDirectory() ? "" : (double) (fileIn.length() / 1024d) + "kb", fileIn.getName());
+                printf("% % % %\n", DATE_FORMAT.format(fileIn.lastModified()) + this.spacing(2), (fileIn.isDirectory() ? "<DIR>" + this.spacing(1) : this.spacing(5)), fileIn.isDirectory() ? "" : fileIn.length() / 1024d + "kb", fileIn.getName());
             }
             return;
         }
@@ -595,7 +604,7 @@ public final class App {
             efFrame.setResizable(false);
 
             final JTextArea efTextArea = new JTextArea();
-            efTextArea.setFont(new Font("Consolas", 0, 14));
+            efTextArea.setFont(new Font("Consolas", Font.PLAIN, 14));
 
             final JScrollPane efScrollPane = new JScrollPane(efTextArea);
             efScrollPane.setBounds(12 /* (int) (50 / 4 )*/, 10, efFrame.getWidth() - 32 /* (int) ((50 / 4) * 2) + 8 */, efFrame.getHeight() - 100);
@@ -680,7 +689,17 @@ public final class App {
         }
 
         // @Note Read the content from the storage file and split the content in lines
-        final String[] lines = this.read(storageFile).split(System.lineSeparator());
+        final String content =  this.read(storageFile);
+
+        // @Note Check if the content is different from null, because the "read" method can not be read the file,
+        // then this condition serves to check the error
+        if (content == null) {
+            errorf("Storage file in path \"%\" can not be load.\n", storageFile.getAbsolutePath());
+            return;
+        }
+
+        final String[] lines = content.split(System.lineSeparator());
+
         for (final String line : lines) {
             // @Note Check if the line is empty then, the process of parse can be continue
             if (line.isEmpty() || line.equals("\n")) {
@@ -758,7 +777,6 @@ public final class App {
      *
      * @param key the key
      * @param path the path
-     * @return true, if the key has been registered, otherwise false
      * @since 0.1
      * @lastChange 1.1 -> Recode the register key method to apply to the new configurations about the new console
      * design
@@ -804,8 +822,7 @@ public final class App {
     /**
      * Destroy App, method,
      * This method destroy the application database
-     *
-     * @return true, if the destruction from the application is completed, otherwise false
+     * @since 0.1
      */
     private void destroyApp() {
         try {
@@ -818,11 +835,14 @@ public final class App {
             this.delete(this.getStorageFile());
             this.keys.clear();
 
+            // @Note Constants
+            final long timeToDestroy = 5000L;
+
             printf("Application has been destroyed.\n");
-            printf("Application will be shutdown in 3 seconds.");
+            printf("Application will be shutdown in % seconds.", timeToDestroy / 1000L);
 
             // @Note This method exit the application but not save the application in database
-            exit(5000, true);
+            exit(timeToDestroy, true);
         } catch (Exception e) {
             errorf("An internal error occured when destroy the application. (Report to an administrator)\n");
         }
@@ -847,8 +867,16 @@ public final class App {
         // @Note Check if the file is a directory or if the file is a file, this check is important to make the
         // deletion from the file
         if (file.isDirectory()) {
+            final File[] listFiles = file.listFiles();
+
+            // @Note This condition checks if the list files is equals from null
+            if (listFiles == null) {
+                errorf("An error occured about list files from File in path \"%\".\n");
+                return;
+            }
+
             // @Note Make the for-each loop from the all files that contains in the directory, and delete the files
-            for (final File fileIn : file.listFiles()) {
+            for (final File fileIn : listFiles) {
                 this.delete(fileIn);
             }
 
@@ -956,7 +984,7 @@ public final class App {
      * replaced by arguments, in this case, the variable is represented by '%' and the arguments is represented by the
      * varargs of "args" that is an argument from argument list from method
      *
-     * @see {@link #printf(boolean, String, Object...)}
+     * @see #printf(boolean, String, Object...)
      * @param message the message that will be print to console output
      * @param args the argument list that will be replaced on the message, if the message contains variables
      * @since 0.1
@@ -973,7 +1001,7 @@ public final class App {
      * the varargs of "args" that is an argument from argument list from method, the error message makes that the
      * message contains "[ERROR]"
      *
-     * @see {@link #printf(boolean, String, Object...)}
+     * @see #printf(boolean, String, Object...)
      * @param printWithDate if true, the method prints a message with the current date
      * @param message the message that will be print to console output
      * @param args the argument list that will be replaced on the message, if the message contains variables
@@ -994,15 +1022,15 @@ public final class App {
      * the varargs of "args" that is an argument from argument list from method, the error message makes that the
      * message contains "[ERROR]"
      *
-     * @see {@link #printf(boolean, String, Object...)}
-     * @see {@link #errorf(boolean, String, Object...)}
+     * @see #printf(boolean, String, Object...)
+     * @see #errorf(boolean, String, Object...)
      * @param message the message that will be print to console output
      * @param args the argument list that will be replaced on the message, if the message contains variables
      * @since 0.1
      * @lastChange 1.1
      */
     private void errorf(final String message, final Object... args) {
-        printf(true, "[ERROR] " + message, args);
+        errorf(true, message, args);
     }
 
     /**
@@ -1036,6 +1064,7 @@ public final class App {
         printf(" > dir <file path> [file index]         - List the all files that contains in directory.\n");
         printf(" > edit <key> <new path>                - Edit a value from a key.\n");
         printf(" > editfile <file path>                 - Edit file content.\n");
+        printf(" > exit                                 - Exit the application.\n");
         printf(" > list                                 - List all registered keys.\n");
         printf(" > mkdir [ -rc ] <paths...>             - Make a directory.\n");
         printf(" > mkfile [ -rc ] <paths...>            - Make a file.\n");
@@ -1100,7 +1129,7 @@ public final class App {
      * represented by index 0, the join between strings has a delimiter that represents the character that separates
      * these strings
      *
-     * @see {@link #join(int, int, String, String...)}
+     * @see #join(int, int, String, String...)
      * @param starts the starts index from the strings array
      * @param separator the separator string between the join from strings array
      * @param strings the string array that will be joined
@@ -1117,8 +1146,8 @@ public final class App {
      * 0 until an end index that is represented by index 0, the join between strings has a delimiter that represents the
      * character that separates these strings
      *
-     * @see {@link #join(int, int, String, String...)}
-     * @see {@link #join(int, String, String...)}
+     * @see #join(int, int, String, String...)
+     * @see #join(int, String, String...)
      * @param separator the separator string between the join from strings array
      * @param strings the string array that will be joined
      * @return joined strings array between a separator into an one string
@@ -1476,7 +1505,7 @@ public final class App {
      * This method wait a milliseconds until to exit the program, this represents a safe method that is used to exit
      * the program safely, do not use "System.exit(-1)", this method makes the save application in database
      *
-     * @see {@link #exit(long, boolean)}
+     * @see #exit(long, boolean)
      * @param millis the milliseconds until exit program
      * @since 1.1
      */
